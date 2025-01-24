@@ -1,8 +1,7 @@
-import React from 'react';
-import QuizEditor from '../components/QuizEditor';
-import QuizVisualization from '../components/QuizVisualization';
+import { QuizEditor } from '../components/QuizEditor';
+import { QuizVisualization } from '../components/QuizVisualization';
 
-const QuizPage = () => {
+export const QuizPage = () => {
   return (
     <div className="flex flex-1">
       <div className="w-1/2">
@@ -15,4 +14,4 @@ const QuizPage = () => {
   );
 };
 
-export default QuizPage;
+

@@ -1,9 +1,9 @@
 import { Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
-import QuizPage from './page/QuizPage';
-import Home from './page/Home';
+import { Layout } from './components/Layout';
+import { QuizPage } from './page/QuizPage';
+import { Home } from './page/Home';
 
-function App() {
+export function App() {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
@@ -17,4 +17,4 @@ function App() {
   );
 }
 
-export default App;
+

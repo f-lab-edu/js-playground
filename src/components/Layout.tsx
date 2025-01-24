@@ -1,9 +1,9 @@
 import { Outlet } from 'react-router-dom';
-import Header from './Header';
-import Sidebar from './Sidebar';
-import Footer from './Footer';
+import { Header } from './Header';
+import { Sidebar } from './Sidebar';
+import { Footer } from './Footer';
 
-const Layout = () => {
+export const Layout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -18,4 +18,4 @@ const Layout = () => {
   );
 };
 
-export default Layout;
+

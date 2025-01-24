@@ -1,6 +1,5 @@
 
-const QuizEditor = () => {
+export const QuizEditor = () => {
   return <div>QuizEditor</div>;
 };
 
-export default QuizEditor;

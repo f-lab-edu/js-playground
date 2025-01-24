@@ -9,7 +9,7 @@ interface QuizType {
   description: string;
 }
 
-const Header = () => {
+export const Header = () => {
   const navigate = useNavigate();
   const { quizId } = useParams();
   const FIRST_QUIZ_ID = 1;
@@ -113,4 +113,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+
