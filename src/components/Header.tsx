@@ -1,9 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  FaRegArrowAltCircleRight,
-  FaRegArrowAltCircleLeft,
-} from 'react-icons/fa';
+import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from 'react-icons/fa';
 import { quizData } from '../data/data';
 
 interface QuizType {
@@ -75,7 +72,7 @@ const Header = () => {
               <FaRegArrowAltCircleLeft
                 className="cursor-pointer text-customYellow"
                 size={24}
-              ></FaRegArrowAltCircleLeft>
+              />
             </button>
             {loading ? (
               <p>로딩 중입니다...</p>
@@ -88,7 +85,7 @@ const Header = () => {
               <FaRegArrowAltCircleRight
                 className="cursor-pointer text-customYellow"
                 size={24}
-              ></FaRegArrowAltCircleRight>
+              />
             </button>
           </>
         )}

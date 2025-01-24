@@ -1,6 +1,4 @@
-import React from 'react';
-import QuizPage from '../page/QuizPage';
-import { Route, Routes, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
