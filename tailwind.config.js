@@ -4,8 +4,12 @@ export default {
   theme: {
     extend: {
       colors: {
-        customYellow: '#F7DF1E',
-        customGray: '#2F3035',
+        yellow: {
+          950: '#F7DF1E',
+        },
+        gray: {
+          950: '#2F3035',
+        },
       },
     },
   },
