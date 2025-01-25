@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from 'react-icons/fa';
 import { quizData } from '../data/data';
+import { HomeHeader } from './HomeHeader';
 
 interface QuizType {
   id: number;
@@ -79,9 +80,7 @@ export const Header = () => {
       </div>
       <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-3">
         {location.pathname === '/' ? (
-          <button onClick={handleStartQuiz} className="text-white">
-            start Quiz
-          </button>
+          <HomeHeader handleStartQuiz={handleStartQuiz} />
         ) : (
           <>
             <button
