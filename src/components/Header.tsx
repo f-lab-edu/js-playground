@@ -16,7 +16,11 @@ export const Header = () => {
   const FIRST_QUIZ_ID = 1;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentQuiz, setCurrentQuiz] = useState<QuizType | null>(null);
+  const [currentQuiz, setCurrentQuiz] = useState<QuizType>({
+    id: 0,
+    title: "기본값 제목",
+    description: "기본값 설명"
+  });
 
 
   const fetchQuizData = async (id: number) => {
@@ -97,7 +101,7 @@ export const Header = () => {
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <p className="text-white">{currentQuiz?.title}</p>
+              <p className="text-white">{currentQuiz.title}</p>
             )}
             <button onClick={handleNext} disabled={!quizId}>
               <FaRegArrowAltCircleRight
