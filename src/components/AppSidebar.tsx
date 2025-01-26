@@ -1,5 +1,4 @@
-import { Calendar, Home, Inbox, Search, Settings, Infinity, Dumbbell } from "lucide-react"
-
+import { Calendar, Home, Inbox, Search, Settings, Infinity, Dumbbell, icons } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -10,9 +9,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarMenuSubItem
+  SidebarMenuSubItem,
+  useSidebar
 } from "@/components/ui/sidebar"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@radix-ui/react-collapsible"
+import { IoIosCloseCircle } from "react-icons/io";
+import { GiHamburgerMenu } from "react-icons/gi";
 
 // Menu items.
 const items = [
@@ -82,11 +84,16 @@ const items = [
 ]
 
 export function AppSidebar() {
+  const { setOpen, open } = useSidebar();
+
   return (
     <Sidebar>
-      <SidebarContent>
+      <SidebarContent className="bg-navy-950 text-white">
         <SidebarGroup>
-          <SidebarGroupLabel>Javascript Playground</SidebarGroupLabel>
+          <div className="flex justify-between items-center">
+            <SidebarGroupLabel className="text-yellow-950 text-lg">code Menu</SidebarGroupLabel>
+            <IoIosCloseCircle className="text-yellow-950 cursor-pointer" size={25} onClick={() => setOpen(false)} />
+          </div>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
