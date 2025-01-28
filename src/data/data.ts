@@ -1,8 +1,22 @@
 export const quizData = [
   {
     id: 1,
-    title: 'JavaScript 기초',
-    description: 'JavaScript의 기본 문법을 배워봅시다.',
+    title: '첫 번째 퀴즈',
+    description: '가데이터로 제공되는 첫 번째 퀴즈 설명입니다.',
+    codeTemplate: "function example() {\n  console.log('Hello, world!');\n}",
+    answer: 'Hello, world!',
+    hint: '코드를 작성하고 결과를 확인하세요.',
+    grid: [
+      [0, 0, 0, 0],
+      [0, 1, 0, 0],
+      [0, 0, 2, 0],
+      [0, 0, 0, 0],
+    ],
+    startPosition: { x: 0, y: 0 },
+    commands: [
+      { name: 'forward', animation: 'move-forward' },
+      { name: 'shoot', animation: 'shoot-animation' },
+    ],
   },
   {
     id: 2,
