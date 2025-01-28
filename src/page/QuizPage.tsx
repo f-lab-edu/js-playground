@@ -6,9 +6,10 @@ export const QuizPage = () => {
     <div className="flex flex-1">
       <div className="w-1/2 m-2">
         <Quiz></Quiz>
+      <div className="w-1/2 h-full">
         <QuizEditor></QuizEditor>
       </div>
-      <div className="w-1/2">
+      <div className="w-1/2 h-full">
         <QuizVisualization></QuizVisualization>
       </div>
     </div>
