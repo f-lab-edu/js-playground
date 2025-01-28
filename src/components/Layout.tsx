@@ -7,13 +7,10 @@ export const Layout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="flex flex-1">
+      <div className="flex flex-1 h-[calc(100vh-64px-24px)]">
         <Sidebar />
-        <main className="flex-1 p-4">
-          <Outlet />
-        </main>
       </div>
-      <Footer></Footer>
+      <Footer />
     </div>
   );
 };
