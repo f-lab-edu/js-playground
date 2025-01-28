@@ -78,7 +78,7 @@ export const Header = () => {
   };
 
   return (
-    <header className="bg-gray-950 relative flex h-[60px] items-center p-3">
+    <header className="bg-gray-950 relative flex h-[64px] items-center p-3">
       <div className="text-yellow-950 font-bold absolute left-4 text-xl">
         <p>Javascript Playground</p>
       </div>
