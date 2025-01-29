@@ -1,6 +1,7 @@
 import { QuizEditor } from '../components/QuizEditor';
 import { QuizVisualization } from '../components/QuizVisualization';
-import { Quiz } from '@/components/Quiz';
+import { Quiz } from '../components/Quiz';
+
 export const QuizPage = () => {
   return (
     <div className="flex flex-1">
