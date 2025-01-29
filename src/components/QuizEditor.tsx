@@ -20,7 +20,7 @@ export const QuizEditor = () => {
   const [value, setValue] = useState("console.log('hello world!');");
   const [output, setOutput] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const runCode = useCallback(() => {
+  const runCode = () => {
     try {
       setError(null);
       const result = executeCode(value);
@@ -33,7 +33,7 @@ export const QuizEditor = () => {
       setError(err.message);
       setOutput(null);
     }
-  }, [value]);
+  };
   const handleCodeChange = (val: string) => {
     setValue(val);
   };
