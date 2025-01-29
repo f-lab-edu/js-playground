@@ -2,6 +2,20 @@ import CodeMirror, { lineNumbers, oneDark, ViewUpdate } from '@uiw/react-codemir
 import { javascript } from '@codemirror/lang-javascript';
 import { useCallback, useState } from 'react';
 
+const executeCode = (code: string) => {
+  try {
+    const result = new Function(
+      `
+        "use strict";
+        ${code}
+      `
+    )();
+    return result;
+  } catch (err: any) {
+    throw new Error(err.message);
+  }
+};
+
 export const QuizEditor = () => {
   const [value, setValue] = useState("console.log('hello world!');");
   const [output, setOutput] = useState<string | null>(null)
@@ -9,19 +23,6 @@ export const QuizEditor = () => {
   const runCode = useCallback(() => {
     try {
       setError(null);
-      const executeCode = (code: string) => {
-        try {
-          const result = new Function(
-            `
-              "use strict";
-              ${code}
-            `
-          )();
-          return result;
-        } catch (err: any) {
-          throw new Error(err.message);
-        }
-      };
       const result = executeCode(value);
       if (result === undefined) {
         setOutput("아웃풋 없음");
@@ -33,10 +34,9 @@ export const QuizEditor = () => {
       setOutput(null);
     }
   }, [value]);
-  const onChange = useCallback((val: string) => {
-    console.log('val:', val);
+  const handleCodeChange = (val: string) => {
     setValue(val);
-  }, []);
+  };
   return (
     <div>
       <CodeMirror
@@ -45,7 +45,7 @@ export const QuizEditor = () => {
         theme={oneDark}
         height="200px"
         extensions={[javascript({ jsx: true }), lineNumbers()]}
-        onChange={onChange} />
+        onChange={handleCodeChange} />
       <div>
         <button onClick={runCode} className='p-2 bg-yellow-950 rounded'>코드실행</button>
       </div>
