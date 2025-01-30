@@ -1,6 +1,6 @@
-import CodeMirror, { lineNumbers, oneDark, ViewUpdate } from '@uiw/react-codemirror';
+import CodeMirror, { lineNumbers, oneDark } from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 const executeCode = (code: string) => {
   try {
@@ -37,6 +37,7 @@ export const QuizEditor = () => {
   const handleCodeChange = (val: string) => {
     setValue(val);
   };
+
   return (
     <div>
       <CodeMirror
