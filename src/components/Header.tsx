@@ -1,43 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from 'react-icons/fa';
-import { quizData } from '../data/data';
 import { HomeHeader } from './HomeHeader';
+import { useQuizStore } from '../store/useQuiz';
 
-interface QuizType {
-  id: number;
-  title: string;
-  description: string;
-}
+const FIRST_QUIZ_ID = 1;
 
 export const Header = () => {
   const navigate = useNavigate();
   const { quizId } = useParams();
-  const FIRST_QUIZ_ID = 1;
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [currentQuiz, setCurrentQuiz] = useState<QuizType>({
-    id: 0,
-    title: "기본값 제목",
-    description: "기본값 설명"
-  });
-
-
-  const fetchQuizData = async (id: number) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const quiz = quizData.find((q) => q.id == id);
-        if (quiz) {
-          setCurrentQuiz(quiz)
-          setError(null)
-          resolve(quiz)
-        } else {
-          setError('오류 퀴즈가 없어용');
-          reject(new Error('퀴즈를 찾을 수 없습니다.'));
-        }
-      }, 0)
-    })
-  };
+  const { currentQuiz, loading, error, fetchQuizData } = useQuizStore();
 
   useEffect(() => {
     if (location.pathname === "/") return;
@@ -45,18 +17,7 @@ export const Header = () => {
     if (isNaN(parsedQuizId) || parsedQuizId < FIRST_QUIZ_ID) {
       navigate(`/quizzes/${FIRST_QUIZ_ID}`, { replace: true })
     }
-    const loadingQuiz = async () => {
-      setLoading(true)
-      try {
-        await fetchQuizData(parsedQuizId)
-      } catch {
-        console.error("퀴즈 데이터 통신 에러 발생", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadingQuiz()
+    fetchQuizData(parsedQuizId);
   }, [quizId]);
 
   const handlePrevious = () => {
@@ -101,7 +62,7 @@ export const Header = () => {
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <p className="text-white">{currentQuiz.title}</p>
+              <p className="text-white">{currentQuiz.title || "퀴즈없음"}</p>
             )}
             <button onClick={handleNext} disabled={!quizId}>
               <FaRegArrowAltCircleRight
