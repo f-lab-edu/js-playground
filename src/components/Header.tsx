@@ -9,7 +9,7 @@ const FIRST_QUIZ_ID = 1;
 export const Header = () => {
   const navigate = useNavigate();
   const { quizId } = useParams();
-  const { currentQuiz, loading, error, setLoading, setError, fetchQuizData } = useQuizStore();
+  const { currentQuiz, loading, error, fetchQuizData } = useQuizStore();
 
   useEffect(() => {
     if (location.pathname === "/") return;
@@ -17,25 +17,13 @@ export const Header = () => {
     if (isNaN(parsedQuizId) || parsedQuizId < FIRST_QUIZ_ID) {
       navigate(`/quizzes/${FIRST_QUIZ_ID}`, { replace: true })
     }
-    const loadingQuiz = async () => {
-      setLoading(true)
-      try {
-        await fetchQuizData(parsedQuizId)
-      } catch {
-        console.error("퀴즈 데이터 통신 에러 발생", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    loadingQuiz()
+    fetchQuizData(parsedQuizId);
   }, [quizId]);
 
   const handlePrevious = () => {
     const parsedQuizId = parseInt(quizId || '', 10);
     if (currentQuiz && parsedQuizId > FIRST_QUIZ_ID) {
       const previousQuizId = parsedQuizId - 1;
-      setError(null)
       navigate(`/quizzes/${previousQuizId}`);
     }
   };
@@ -43,7 +31,6 @@ export const Header = () => {
     const parsedQuizId = parseInt(quizId || '', 10);
     if (currentQuiz) {
       const nextQuizId = parsedQuizId + 1;
-      setError(null)
       navigate(`/quizzes/${nextQuizId}`);
     }
   };
@@ -75,7 +62,7 @@ export const Header = () => {
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <p className="text-white">{currentQuiz?.title}</p>
+              <p className="text-white">{currentQuiz.title || "퀴즈없음"}</p>
             )}
             <button onClick={handleNext} disabled={!quizId}>
               <FaRegArrowAltCircleRight
