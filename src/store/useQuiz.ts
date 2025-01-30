@@ -30,12 +30,14 @@ export const useQuizStore = create<QuizState>((set) => ({
       // const data: QuizType = await response.json();
       const data = quizData.find((quiz) => id === quiz.id);
       if (data) {
-        set({ currentQuiz: data, loading: false });
+        set({ currentQuiz: data });
       } else {
-        set({ error: '퀴즈가없수', loading: false });
+        set({ error: '퀴즈가없수' });
       }
     } catch (error) {
-      set({ error: '퀴즈 데이터 통신 에러 발생', loading: false });
+      set({ error: '퀴즈 데이터 통신 에러 발생' });
+    } finally {
+      set({ loading: false });
     }
   },
 }));
