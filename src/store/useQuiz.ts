@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { quizData } from '../data/data';
-interface QuizType {
+export interface QuizType {
   id: number;
   title: string;
   description: string;
@@ -9,13 +9,17 @@ interface QuizType {
   hint: string;
   grid: number[][];
   startPosition: { x: number; y: number };
-  commands?: { name: string; animation: string }[];
+  commands: { name: string; function: () => void }[];
 }
 interface QuizState {
   currentQuiz: QuizType;
   fetchQuizData: (id: number) => Promise<void>;
   loading: boolean;
   error: string | null;
+}
+interface QuizResultState {
+  userAnswer: string[] | string;
+  setUserAnswer: (answer: string[] | string) => void;
 }
 
 export const useQuizStore = create<QuizState>((set) => ({
@@ -40,4 +44,9 @@ export const useQuizStore = create<QuizState>((set) => ({
       set({ loading: false });
     }
   },
+}));
+
+export const useQuizResultStore = create<QuizResultState>((set) => ({
+  userAnswer: '',
+  setUserAnswer: (answer) => set({ userAnswer: answer }),
 }));

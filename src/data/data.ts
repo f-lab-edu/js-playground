@@ -8,14 +8,24 @@ export const quizData = [
     hint: '코드를 작성하고 결과를 확인하세요.',
     grid: [
       [0, 0, 0, 0],
-      [0, 1, 0, 0],
-      [0, 0, 2, 0],
       [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [2, 0, 0, 0],
     ],
     startPosition: { x: 0, y: 0 },
     commands: [
-      { name: 'forward', animation: 'move-forward' },
-      { name: 'shoot', animation: 'shoot-animation' },
+      {
+        name: 'forward',
+        function: () => {
+          console.log('move forward');
+        },
+      },
+      {
+        name: 'shoot',
+        function: () => {
+          console.log('shoot');
+        },
+      },
     ],
   },
   {
@@ -33,8 +43,18 @@ export const quizData = [
     ],
     startPosition: { x: 0, y: 0 },
     commands: [
-      { name: 'forward2', animation: 'move-forward2' },
-      { name: 'shoot2', animation: 'shoot-animation2' },
+      {
+        name: 'forward',
+        function: () => {
+          console.log('move forward');
+        },
+      },
+      {
+        name: 'shoot',
+        function: () => {
+          console.log('shoot');
+        },
+      },
     ],
   },
   {
@@ -52,8 +72,18 @@ export const quizData = [
     ],
     startPosition: { x: 0, y: 0 },
     commands: [
-      { name: 'forward3', animation: 'move-forward3' },
-      { name: 'shoot3', animation: 'shoot-animation3' },
+      {
+        name: 'forward',
+        function: () => {
+          console.log('move forward');
+        },
+      },
+      {
+        name: 'shoot',
+        function: () => {
+          console.log('shoot');
+        },
+      },
     ],
   },
   {
@@ -71,8 +101,18 @@ export const quizData = [
     ],
     startPosition: { x: 0, y: 0 },
     commands: [
-      { name: 'forward4', animation: 'move-forward4' },
-      { name: 'shoot4', animation: 'shoot-animation4' },
+      {
+        name: 'forward',
+        function: () => {
+          console.log('move forward');
+        },
+      },
+      {
+        name: 'shoot',
+        function: () => {
+          console.log('shoot');
+        },
+      },
     ],
   },
 ];
