@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from 'react-icons/fa';
+import {
+  FaRegArrowAltCircleRight,
+  FaRegArrowAltCircleLeft,
+} from 'react-icons/fa';
 import { HomeHeader } from './HomeHeader';
 import { useQuizStore } from '../store/useQuiz';
 
@@ -12,10 +15,10 @@ export const Header = () => {
   const { currentQuiz, loading, error, fetchQuizData } = useQuizStore();
 
   useEffect(() => {
-    if (location.pathname === "/") return;
+    if (location.pathname === '/') return;
     const parsedQuizId = parseInt(quizId || '', 10);
     if (isNaN(parsedQuizId) || parsedQuizId < FIRST_QUIZ_ID) {
-      navigate(`/quizzes/${FIRST_QUIZ_ID}`, { replace: true })
+      navigate(`/quizzes/${FIRST_QUIZ_ID}`, { replace: true });
     }
     fetchQuizData(parsedQuizId);
   }, [quizId]);
@@ -62,7 +65,7 @@ export const Header = () => {
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <p className="text-white">{currentQuiz.title || "퀴즈없음"}</p>
+              <p className="text-white">{currentQuiz.title || '퀴즈없음'}</p>
             )}
             <button onClick={handleNext} disabled={!quizId}>
               <FaRegArrowAltCircleRight

@@ -1,4 +1,13 @@
-import { Calendar, Home, Inbox, Search, Settings, Infinity, Dumbbell, icons } from "lucide-react"
+import {
+  Calendar,
+  Home,
+  Inbox,
+  Search,
+  Settings,
+  Infinity,
+  Dumbbell,
+  icons,
+} from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -10,78 +19,81 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubItem,
-  useSidebar
-} from "@/components/ui/sidebar"
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@radix-ui/react-collapsible"
-import { IoIosCloseCircle } from "react-icons/io";
-import { GiHamburgerMenu } from "react-icons/gi";
+  useSidebar,
+} from '@/components/ui/sidebar';
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from '@radix-ui/react-collapsible';
+import { IoIosCloseCircle } from 'react-icons/io';
+import { GiHamburgerMenu } from 'react-icons/gi';
 
-// Menu items.
 const items = [
   {
-    title: "Home",
-    url: "#",
+    title: 'Home',
+    url: '#',
     icon: Home,
     subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
+      { title: 'Sub Home 1', url: '/sub-home-1' },
+      { title: 'Sub Home 2', url: '/sub-home-2' },
     ],
   },
   {
-    title: "Inbox",
-    url: "#",
+    title: 'Inbox',
+    url: '#',
     icon: Inbox,
     subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
+      { title: 'Sub Home 1', url: '/sub-home-1' },
+      { title: 'Sub Home 2', url: '/sub-home-2' },
     ],
   },
   {
-    title: "Calendar",
-    url: "#",
+    title: 'Calendar',
+    url: '#',
     icon: Calendar,
     subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
+      { title: 'Sub Home 1', url: '/sub-home-1' },
+      { title: 'Sub Home 2', url: '/sub-home-2' },
     ],
   },
   {
-    title: "Search",
-    url: "#",
+    title: 'Search',
+    url: '#',
     icon: Search,
     subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
+      { title: 'Sub Home 1', url: '/sub-home-1' },
+      { title: 'Sub Home 2', url: '/sub-home-2' },
     ],
   },
   {
-    title: "Settings",
-    url: "#",
+    title: 'Settings',
+    url: '#',
     icon: Settings,
     subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
+      { title: 'Sub Home 1', url: '/sub-home-1' },
+      { title: 'Sub Home 2', url: '/sub-home-2' },
     ],
   },
   {
-    title: "repeat",
-    url: "#",
+    title: 'repeat',
+    url: '#',
     icon: Infinity,
     subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
+      { title: 'Sub Home 1', url: '/sub-home-1' },
+      { title: 'Sub Home 2', url: '/sub-home-2' },
     ],
   },
   {
-    title: "active",
-    url: "#",
+    title: 'active',
+    url: '#',
     icon: Dumbbell,
     subItems: [
-      { title: "수집하기", url: "/sub-home-1" },
-      { title: "앞으로가기", url: "/sub-home-2" },
+      { title: '수집하기', url: '/sub-home-1' },
+      { title: '앞으로가기', url: '/sub-home-2' },
     ],
   },
-]
+];
 
 export function AppSidebar() {
   const { setOpen, open } = useSidebar();
@@ -91,8 +103,14 @@ export function AppSidebar() {
       <SidebarContent className="bg-navy-950 text-white">
         <SidebarGroup>
           <div className="flex justify-between items-center">
-            <SidebarGroupLabel className="text-yellow-950 text-lg">code Menu</SidebarGroupLabel>
-            <IoIosCloseCircle className="text-yellow-950 cursor-pointer" size={25} onClick={() => setOpen(false)} />
+            <SidebarGroupLabel className="text-yellow-950 text-lg">
+              code Menu
+            </SidebarGroupLabel>
+            <IoIosCloseCircle
+              className="text-yellow-950 cursor-pointer"
+              size={25}
+              onClick={() => setOpen(false)}
+            />
           </div>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -103,7 +121,6 @@ export function AppSidebar() {
                   className="group/collapsible"
                 >
                   <SidebarMenuItem>
-
                     <CollapsibleTrigger asChild>
                       <SidebarMenuButton>
                         <span className="flex items-center gap-2">
@@ -134,5 +151,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

@@ -20,6 +20,9 @@ interface QuizState {
 interface QuizResultState {
   userAnswer: string[] | string;
   setUserAnswer: (answer: string[] | string) => void;
+  userCode: string;
+  setUserCode: (code: string) => void;
+  runCode: (code: string) => void;
 }
 
 export const useQuizStore = create<QuizState>((set) => ({
@@ -49,4 +52,29 @@ export const useQuizStore = create<QuizState>((set) => ({
 export const useQuizResultStore = create<QuizResultState>((set) => ({
   userAnswer: '',
   setUserAnswer: (answer) => set({ userAnswer: answer }),
+  userCode: '',
+  setUserCode: (code) => set({ userCode: code }),
+  runCode: (code) => {
+    const currentQuiz = useQuizStore.getState().currentQuiz;
+    let executedList: string[] = [];
+    currentQuiz.commands.forEach((cmd) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any)[cmd.name] = () => {
+        executedList.push(cmd.name);
+        return cmd.function();
+      };
+    });
+
+    new Function(
+      `
+          "use strict";
+          ${code}
+          solution()
+        `
+    )();
+
+    set({
+      userAnswer: executedList.length > 0 ? executedList : '아웃풋이없어',
+    });
+  },
 }));

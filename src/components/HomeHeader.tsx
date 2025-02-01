@@ -1,4 +1,3 @@
-
 interface HomeHeaderProps {
   handleStartQuiz: () => void;
 }
@@ -8,5 +7,5 @@ export const HomeHeader = ({ handleStartQuiz }: HomeHeaderProps) => {
     <button onClick={handleStartQuiz} className="text-white">
       start Quiz
     </button>
-  )
-}
+  );
+};

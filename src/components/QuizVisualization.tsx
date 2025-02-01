@@ -1,21 +1,22 @@
-import { useQuizResultStore, useQuizStore } from "@/store/useQuiz";
-import { useEffect, useState } from "react";
+import { useQuizResultStore, useQuizStore } from '@/store/useQuiz';
+import { useEffect, useState } from 'react';
 
 export const QuizVisualization = () => {
-  const { currentQuiz } = useQuizStore()
-  const { startPosition = { x: 0, y: 0 }, grid = [] } = currentQuiz
-  const [characterPos, setCharacterPos] = useState(startPosition)
-  const { userAnswer } = useQuizResultStore()
+  const { currentQuiz } = useQuizStore();
+  const { startPosition = { x: 0, y: 0 }, grid = [] } = currentQuiz;
+  const [characterPos, setCharacterPos] = useState(startPosition);
+  const { userAnswer } = useQuizResultStore();
 
   useEffect(() => {
-    if (!userAnswer || !Array.isArray(userAnswer) || userAnswer.length === 0) return;
+    if (!userAnswer || !Array.isArray(userAnswer) || userAnswer.length === 0)
+      return;
     let newPos = { ...startPosition };
     userAnswer.map((command, index) => {
       setTimeout(() => {
-        if (command === "forward") {
+        if (command === 'forward') {
           newPos.y = Math.min(newPos.y + 1, grid.length - 1);
-        } else if (command === "shoot") {
-          console.log("🔫 Shooting!");
+        } else if (command === 'shoot') {
+          console.log('🔫 Shooting!');
         }
         setCharacterPos({ ...newPos });
       }, index * 1000);
@@ -29,12 +30,15 @@ export const QuizVisualization = () => {
           row.map((col, colIndex) => {
             let content = null;
             if (rowIndex === characterPos.y && colIndex === characterPos.x) {
-              content = "🧍";
+              content = '🧍';
             } else if (col === 2) {
-              content = "🎯";
+              content = '🎯';
             }
             return (
-              <div key={`${rowIndex}-${colIndex}`} className="w-20 h-20 border flex items-center justify-center bg-navy-950">
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className="w-20 h-20 border flex items-center justify-center bg-navy-950"
+              >
                 {content}
               </div>
             );
