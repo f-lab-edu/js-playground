@@ -3,12 +3,12 @@ export interface QuizType {
   id: string;
   title: string;
   description: string;
-  codeTemplate: string;
-  answer: string;
-  hint: string;
   grid: number[][];
+  hint: string;
   startPosition: { x: number; y: number };
-  commands: { name: string; function: () => void }[];
+  goalPosition: { x: number; y: number };
+  goalAction: string;
+  commands: { name: string; functionCode: string }[];
 }
 interface QuizState {
   currentQuiz: QuizType;
@@ -31,14 +31,11 @@ export const useQuizStore = create<QuizState>((set) => ({
   fetchQuizData: async (id: string) => {
     set({ loading: true, error: null });
     try {
-      // 실제 통신시 주석 코드로 바꿀것.
       const response = await fetch(`http://localhost:5001/api/quizzes/${id}`);
       if (!response.ok) {
         throw new Error(`서버응답 오류 ${response.status}`);
       }
       const data = await response.json();
-      // const data = quizData.find((quiz) => id === quiz.id);
-      console.log(data);
       if (data) {
         set({ currentQuiz: data.data });
       } else {
@@ -64,7 +61,7 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (window as any)[cmd.name] = () => {
         executedList.push(cmd.name);
-        return cmd.function();
+        new Function(cmd.functionCode)();
       };
     });
 
@@ -79,5 +76,6 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
     set({
       userAnswer: executedList.length > 0 ? executedList : '아웃풋이없어',
     });
+    return executedList;
   },
 }));

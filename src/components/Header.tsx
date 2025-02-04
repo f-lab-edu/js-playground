@@ -22,7 +22,6 @@ export const Header = () => {
       fetchQuizData(FIRST_QUIZ_ID.toString());
     }
     fetchQuizData(parsedQuizId.toString());
-    console.log(currentQuiz, 'currentQuiz');
   }, [quizId]);
 
   const handlePrevious = () => {
