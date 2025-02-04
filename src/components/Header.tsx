@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
 import {
-  FaRegArrowAltCircleRight,
   FaRegArrowAltCircleLeft,
+  FaRegArrowAltCircleRight,
 } from 'react-icons/fa';
-import { HomeHeader } from './HomeHeader';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useQuizStore } from '../store/useQuiz';
+import { HomeHeader } from './HomeHeader';
 
 const FIRST_QUIZ_ID = 1;
 
@@ -19,8 +19,10 @@ export const Header = () => {
     const parsedQuizId = parseInt(quizId || '', 10);
     if (isNaN(parsedQuizId) || parsedQuizId < FIRST_QUIZ_ID) {
       navigate(`/quizzes/${FIRST_QUIZ_ID}`, { replace: true });
+      fetchQuizData(FIRST_QUIZ_ID.toString());
     }
-    fetchQuizData(parsedQuizId);
+    fetchQuizData(parsedQuizId.toString());
+    console.log(currentQuiz, 'currentQuiz');
   }, [quizId]);
 
   const handlePrevious = () => {
