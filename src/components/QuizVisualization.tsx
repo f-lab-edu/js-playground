@@ -1,15 +1,14 @@
 import { useQuizResultStore, useQuizStore } from '@/store/useQuiz';
 import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { FORWARD, SHOOT } from '../config/constant';
 export const QuizVisualization = () => {
   const { currentQuiz } = useQuizStore();
-  const { startPosition, grid, goalPosition } = currentQuiz;
-  const [characterPos, setCharacterPos] = useState(
-    startPosition || { x: 0, y: 0 }
-  );
+  const { startPosition = { x: 0, y: 0 }, grid, goalPosition } = currentQuiz;
+  const [characterPos, setCharacterPos] = useState(startPosition);
   const { userAnswer } = useQuizResultStore();
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
-
+  const { quizId } = useParams();
   useEffect(() => {
     if (!userAnswer || !Array.isArray(userAnswer) || userAnswer.length === 0)
       return;
@@ -42,6 +41,11 @@ export const QuizVisualization = () => {
       }, index * 1000);
     });
   }, [userAnswer]);
+
+  useEffect(() => {
+    setCharacterPos(startPosition);
+    setIsCorrect(null);
+  }, [quizId]);
 
   return (
     <div className="bg-gray-950 h-full flex justify-center items-center flex-col">

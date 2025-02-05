@@ -25,10 +25,8 @@ interface QuizResultState {
   addSidebarCommand: (code: string) => void;
   runCode: (code: string) => void;
 }
-declare global {
-  interface Window {
-    [key: string]: () => void;
-  }
+interface CommandObject {
+  [key: string]: () => void;
 }
 
 export const useQuizStore = create<QuizState>((set) => ({
@@ -68,21 +66,26 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
   },
   runCode: (code) => {
     const currentQuiz = useQuizStore.getState().currentQuiz;
-    let executedList: string[] = [];
-    currentQuiz.commands.forEach((cmd) => {
-      window[cmd.name] = () => {
-        executedList.push(cmd.name);
-        new Function(cmd.functionCode)();
-      };
-    });
+    const executedList: string[] = [];
+    const commandsForSolution = currentQuiz.commands.reduce(
+      (acc: CommandObject, cur) => {
+        acc[cur.name] = () => {
+          executedList.push(cur.name);
+          new Function(cur.functionCode)();
+        };
+        return acc;
+      },
+      {}
+    );
 
     new Function(
       `
           "use strict";
+          const{${Object.keys(commandsForSolution).join(', ')}} = arguments[0]
           ${code}
           solution()
         `
-    )();
+    )(commandsForSolution);
 
     set({
       userAnswer: executedList.length > 0 ? executedList : ['아웃풋이없어'],
