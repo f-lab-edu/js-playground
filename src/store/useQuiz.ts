@@ -22,6 +22,7 @@ interface QuizResultState {
   setUserAnswer: (answer: string[]) => void;
   userCode: string;
   setUserCode: (code: string) => void;
+  addSidebarCommand: (code: string) => void;
   runCode: (code: string) => void;
 }
 declare global {
@@ -60,6 +61,11 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
   setUserAnswer: (answer) => set({ userAnswer: answer }),
   userCode: '',
   setUserCode: (code) => set({ userCode: code }),
+  addSidebarCommand: (code: string) => {
+    set((state) => ({
+      userCode: state.userCode + '\n' + code + `()`,
+    }));
+  },
   runCode: (code) => {
     const currentQuiz = useQuizStore.getState().currentQuiz;
     let executedList: string[] = [];
