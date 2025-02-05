@@ -1,6 +1,6 @@
 import { useQuizResultStore, useQuizStore } from '@/store/useQuiz';
 import { useEffect, useState } from 'react';
-
+import { FORWARD, SHOOT } from '../config/constant';
 export const QuizVisualization = () => {
   const { currentQuiz } = useQuizStore();
   const { startPosition, grid, goalPosition } = currentQuiz;
@@ -17,9 +17,9 @@ export const QuizVisualization = () => {
     let userAction = false;
     userAnswer.map((command, index) => {
       setTimeout(() => {
-        if (command === 'forward') {
+        if (command === FORWARD) {
           newPos.y = Math.min(newPos.y + 1, grid.length - 1);
-        } else if (command === 'shoot') {
+        } else if (command === SHOOT) {
           console.log('🔫 Shooting!');
           userAction = true;
         }

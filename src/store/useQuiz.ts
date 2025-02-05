@@ -1,3 +1,4 @@
+import { API_BASE_URL } from '@/config/constant';
 import { create } from 'zustand';
 export interface QuizType {
   id: string;
@@ -17,11 +18,16 @@ interface QuizState {
   error: string | null;
 }
 interface QuizResultState {
-  userAnswer: string[] | string;
-  setUserAnswer: (answer: string[] | string) => void;
+  userAnswer: string[];
+  setUserAnswer: (answer: string[]) => void;
   userCode: string;
   setUserCode: (code: string) => void;
   runCode: (code: string) => void;
+}
+declare global {
+  interface Window {
+    [key: string]: () => void;
+  }
 }
 
 export const useQuizStore = create<QuizState>((set) => ({
@@ -31,7 +37,7 @@ export const useQuizStore = create<QuizState>((set) => ({
   fetchQuizData: async (id: string) => {
     set({ loading: true, error: null });
     try {
-      const response = await fetch(`http://localhost:5001/api/quizzes/${id}`);
+      const response = await fetch(`${API_BASE_URL}/quizzes/${id}`);
       if (!response.ok) {
         throw new Error(`서버응답 오류 ${response.status}`);
       }
@@ -50,7 +56,7 @@ export const useQuizStore = create<QuizState>((set) => ({
 }));
 
 export const useQuizResultStore = create<QuizResultState>((set) => ({
-  userAnswer: '',
+  userAnswer: [],
   setUserAnswer: (answer) => set({ userAnswer: answer }),
   userCode: '',
   setUserCode: (code) => set({ userCode: code }),
@@ -58,8 +64,7 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
     const currentQuiz = useQuizStore.getState().currentQuiz;
     let executedList: string[] = [];
     currentQuiz.commands.forEach((cmd) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (window as any)[cmd.name] = () => {
+      window[cmd.name] = () => {
         executedList.push(cmd.name);
         new Function(cmd.functionCode)();
       };
@@ -74,7 +79,7 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
     )();
 
     set({
-      userAnswer: executedList.length > 0 ? executedList : '아웃풋이없어',
+      userAnswer: executedList.length > 0 ? executedList : ['아웃풋이없어'],
     });
     return executedList;
   },

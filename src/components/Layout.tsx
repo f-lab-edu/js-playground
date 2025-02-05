@@ -6,7 +6,7 @@ export const Layout = () => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <div className="flex flex-1 h-[calc(100vh-64px-24px)]">
+      <div className="flex flex-1 h-[calc(100vh-64px-64px)]">
         <Sidebar />
       </div>
       <Footer />

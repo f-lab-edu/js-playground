@@ -1,3 +1,4 @@
+import { FIRST_QUIZ_ID } from '@/config/constant';
 import { useEffect } from 'react';
 import {
   FaRegArrowAltCircleLeft,
@@ -6,8 +7,6 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuizStore } from '../store/useQuiz';
 import { HomeHeader } from './HomeHeader';
-
-const FIRST_QUIZ_ID = 1;
 
 export const Header = () => {
   const navigate = useNavigate();
