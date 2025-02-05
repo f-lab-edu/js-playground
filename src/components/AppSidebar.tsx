@@ -1,14 +1,4 @@
 import {
-  Calendar,
-  Home,
-  Inbox,
-  Search,
-  Settings,
-  Infinity,
-  Dumbbell,
-  icons,
-} from 'lucide-react';
-import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
@@ -23,11 +13,17 @@ import {
 } from '@/components/ui/sidebar';
 import {
   Collapsible,
-  CollapsibleTrigger,
   CollapsibleContent,
+  CollapsibleTrigger,
 } from '@radix-ui/react-collapsible';
+import {
+  Dumbbell,
+  Home,
+  Inbox,
+  Infinity,
+  Settings
+} from 'lucide-react';
 import { IoIosCloseCircle } from 'react-icons/io';
-import { GiHamburgerMenu } from 'react-icons/gi';
 
 const items = [
   {
@@ -43,24 +39,6 @@ const items = [
     title: 'Inbox',
     url: '#',
     icon: Inbox,
-    subItems: [
-      { title: 'Sub Home 1', url: '/sub-home-1' },
-      { title: 'Sub Home 2', url: '/sub-home-2' },
-    ],
-  },
-  {
-    title: 'Calendar',
-    url: '#',
-    icon: Calendar,
-    subItems: [
-      { title: 'Sub Home 1', url: '/sub-home-1' },
-      { title: 'Sub Home 2', url: '/sub-home-2' },
-    ],
-  },
-  {
-    title: 'Search',
-    url: '#',
-    icon: Search,
     subItems: [
       { title: 'Sub Home 1', url: '/sub-home-1' },
       { title: 'Sub Home 2', url: '/sub-home-2' },

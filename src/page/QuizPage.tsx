@@ -9,7 +9,7 @@ export const QuizPage = () => {
         <Quiz />
         <QuizEditor />
       </div>
-      <div className="w-1/2 mt-2 ml-1">
+      <div className="w-1/2 mt-2 ml-1 mr-2">
         <QuizVisualization />
       </div>
     </div>
