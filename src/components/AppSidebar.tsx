@@ -1,4 +1,3 @@
-import { Calendar, Home, Inbox, Search, Settings, Infinity, Dumbbell, icons } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -8,104 +7,59 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
-  useSidebar
-} from "@/components/ui/sidebar"
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@radix-ui/react-collapsible"
-import { IoIosCloseCircle } from "react-icons/io";
-import { GiHamburgerMenu } from "react-icons/gi";
-
-// Menu items.
-const items = [
-  {
-    title: "Home",
-    url: "#",
-    icon: Home,
-    subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
-    ],
-  },
-  {
-    title: "Inbox",
-    url: "#",
-    icon: Inbox,
-    subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
-    ],
-  },
-  {
-    title: "Calendar",
-    url: "#",
-    icon: Calendar,
-    subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
-    ],
-  },
-  {
-    title: "Search",
-    url: "#",
-    icon: Search,
-    subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
-    ],
-  },
-  {
-    title: "Settings",
-    url: "#",
-    icon: Settings,
-    subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
-    ],
-  },
-  {
-    title: "repeat",
-    url: "#",
-    icon: Infinity,
-    subItems: [
-      { title: "Sub Home 1", url: "/sub-home-1" },
-      { title: "Sub Home 2", url: "/sub-home-2" },
-    ],
-  },
-  {
-    title: "active",
-    url: "#",
-    icon: Dumbbell,
-    subItems: [
-      { title: "수집하기", url: "/sub-home-1" },
-      { title: "앞으로가기", url: "/sub-home-2" },
-    ],
-  },
-]
+  useSidebar,
+} from '@/components/ui/sidebar';
+import { useQuizResultStore, useQuizStore } from '@/store/useQuiz';
+import { Collapsible, CollapsibleTrigger } from '@radix-ui/react-collapsible';
+import { Inbox } from 'lucide-react';
+import { IoIosCloseCircle } from 'react-icons/io';
 
 export function AppSidebar() {
+  const { currentQuiz } = useQuizStore();
+  const commands = currentQuiz?.commands ?? [];
   const { setOpen, open } = useSidebar();
+  const { addSidebarCommand } = useQuizResultStore();
+  const alterSidebarCommands = (
+    commands: {
+      name: string;
+      functionCode: string;
+    }[]
+  ) => {
+    return commands.map((command) => ({
+      title: command.name,
+      icon: Inbox,
+      command: command.functionCode,
+    }));
+  };
+  const alteredSidebarCommand = alterSidebarCommands(commands);
 
   return (
     <Sidebar>
       <SidebarContent className="bg-navy-950 text-white">
         <SidebarGroup>
           <div className="flex justify-between items-center">
-            <SidebarGroupLabel className="text-yellow-950 text-lg">code Menu</SidebarGroupLabel>
-            <IoIosCloseCircle className="text-yellow-950 cursor-pointer" size={25} onClick={() => setOpen(false)} />
+            <SidebarGroupLabel className="text-yellow-950 text-lg">
+              code Menu
+            </SidebarGroupLabel>
+            <IoIosCloseCircle
+              className="text-yellow-950 cursor-pointer"
+              size={25}
+              onClick={() => setOpen(false)}
+            />
           </div>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {alteredSidebarCommand.map((item) => (
                 <Collapsible
                   key={item.title}
-                  defaultOpen={item.subItems && item.subItems.length > 0}
+                  // defaultOpen={item.subItems && item.subItems.length > 0}
                   className="group/collapsible"
                 >
                   <SidebarMenuItem>
-
                     <CollapsibleTrigger asChild>
-                      <SidebarMenuButton>
+                      <SidebarMenuButton
+                        onClick={() => addSidebarCommand(item.title)}
+                      >
                         <span className="flex items-center gap-2">
                           <item.icon className="w-4 h-4 shrink-0" />
                           <span className="group-data-[state=collapsed]:hidden">
@@ -114,18 +68,6 @@ export function AppSidebar() {
                         </span>
                       </SidebarMenuButton>
                     </CollapsibleTrigger>
-
-                    {item.subItems && item.subItems.length > 0 && (
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {item.subItems.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.title}>
-                              <a href={subItem.url}>{subItem.title}</a>
-                            </SidebarMenuSubItem>
-                          ))}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    )}
                   </SidebarMenuItem>
                 </Collapsible>
               ))}
@@ -134,5 +76,5 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }

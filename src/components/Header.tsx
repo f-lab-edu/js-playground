@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react';
+import { FIRST_QUIZ_ID } from '@/config/constant';
+import { useEffect } from 'react';
+import {
+  FaRegArrowAltCircleLeft,
+  FaRegArrowAltCircleRight,
+} from 'react-icons/fa';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FaRegArrowAltCircleRight, FaRegArrowAltCircleLeft } from 'react-icons/fa';
-import { HomeHeader } from './HomeHeader';
 import { useQuizStore } from '../store/useQuiz';
-
-const FIRST_QUIZ_ID = 1;
+import { HomeHeader } from './HomeHeader';
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -12,12 +14,13 @@ export const Header = () => {
   const { currentQuiz, loading, error, fetchQuizData } = useQuizStore();
 
   useEffect(() => {
-    if (location.pathname === "/") return;
+    if (location.pathname === '/') return;
     const parsedQuizId = parseInt(quizId || '', 10);
     if (isNaN(parsedQuizId) || parsedQuizId < FIRST_QUIZ_ID) {
-      navigate(`/quizzes/${FIRST_QUIZ_ID}`, { replace: true })
+      navigate(`/quizzes/${FIRST_QUIZ_ID}`, { replace: true });
+      fetchQuizData(FIRST_QUIZ_ID.toString());
     }
-    fetchQuizData(parsedQuizId);
+    fetchQuizData(parsedQuizId.toString());
   }, [quizId]);
 
   const handlePrevious = () => {
@@ -62,7 +65,7 @@ export const Header = () => {
             ) : error ? (
               <p className="text-red-500">{error}</p>
             ) : (
-              <p className="text-white">{currentQuiz.title || "퀴즈없음"}</p>
+              <p className="text-white">{currentQuiz.title || '퀴즈없음'}</p>
             )}
             <button onClick={handleNext} disabled={!quizId}>
               <FaRegArrowAltCircleRight
@@ -76,5 +79,3 @@ export const Header = () => {
     </header>
   );
 };
-
-

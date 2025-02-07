@@ -1,7 +1,7 @@
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
-import { QuizPage } from './page/QuizPage';
 import { Home } from './page/Home';
+import { QuizPage } from './page/QuizPage';
 
 export function App() {
   return (
@@ -16,5 +16,3 @@ export function App() {
     </Routes>
   );
 }
-
-
