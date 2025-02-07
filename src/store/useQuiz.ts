@@ -13,7 +13,9 @@ export interface QuizType {
 }
 interface QuizState {
   currentQuiz: QuizType;
+  quizzesList: QuizListState[];
   fetchQuizData: (id: string) => Promise<void>;
+  fetchQuizzesData: () => Promise<void>;
   loading: boolean;
   error: string | null;
 }
@@ -28,11 +30,36 @@ interface QuizResultState {
 interface CommandObject {
   [key: string]: () => void;
 }
+export interface QuizListState {
+  _id: string;
+  id: string;
+  title: string;
+}
 
 export const useQuizStore = create<QuizState>((set) => ({
   currentQuiz: {} as QuizType,
   loading: false,
   error: null,
+  quizzesList: [],
+  fetchQuizzesData: async () => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetch(`${API_BASE_URL}/quizzes`);
+      if (!response.ok) {
+        throw new Error(`서버응답 오류 ${response.status}`);
+      }
+      const data = await response.json();
+      if (data) {
+        set({ quizzesList: data });
+      } else {
+        set({ error: '퀴즈리스트가없음' });
+      }
+    } catch (error) {
+      set({ error: '퀴즈리스트 데이터 통신 에러 발생' });
+    } finally {
+      set({ loading: false });
+    }
+  },
   fetchQuizData: async (id: string) => {
     set({ loading: true, error: null });
     try {

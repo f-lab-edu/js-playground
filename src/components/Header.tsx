@@ -1,4 +1,3 @@
-import { FIRST_QUIZ_ID } from '@/config/constant';
 import { useEffect } from 'react';
 import {
   FaRegArrowAltCircleLeft,
@@ -7,38 +6,41 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuizStore } from '../store/useQuiz';
 import { HomeHeader } from './HomeHeader';
-
 export const Header = () => {
   const navigate = useNavigate();
   const { quizId } = useParams();
-  const { currentQuiz, loading, error, fetchQuizData } = useQuizStore();
+  const { currentQuiz, loading, error, fetchQuizData, quizzesList } =
+    useQuizStore();
 
   useEffect(() => {
-    if (location.pathname === '/') return;
-    const parsedQuizId = parseInt(quizId || '', 10);
-    if (isNaN(parsedQuizId) || parsedQuizId < FIRST_QUIZ_ID) {
-      navigate(`/quizzes/${FIRST_QUIZ_ID}`, { replace: true });
-      fetchQuizData(FIRST_QUIZ_ID.toString());
-    }
-    fetchQuizData(parsedQuizId.toString());
+    if (location.pathname === '/' || !quizId) return;
+    fetchQuizData(quizId);
   }, [quizId]);
-
+  const currentIndex = quizzesList.findIndex(
+    (quiz) => quiz.id === currentQuiz.id
+  );
   const handlePrevious = () => {
-    const parsedQuizId = parseInt(quizId || '', 10);
-    if (currentQuiz && parsedQuizId > FIRST_QUIZ_ID) {
-      const previousQuizId = parsedQuizId - 1;
-      navigate(`/quizzes/${previousQuizId}`);
+    if (currentIndex > 0) {
+      navigate(`${quizzesList[currentIndex - 1].id}`);
+    } else {
+      console.log('문제찾을수없음');
     }
   };
   const handleNext = () => {
-    const parsedQuizId = parseInt(quizId || '', 10);
-    if (currentQuiz) {
-      const nextQuizId = parsedQuizId + 1;
-      navigate(`/quizzes/${nextQuizId}`);
+    if (currentIndex !== -1 && currentIndex < quizzesList.length - 1) {
+      navigate(`${quizzesList[currentIndex + 1].id}`);
+    } else {
+      console.log('문제찾을수없음');
     }
   };
   const handleStartQuiz = () => {
-    navigate(`/quizzes/${FIRST_QUIZ_ID}`);
+    if (quizzesList.length === 0) {
+      console.log('퀴즈목록없음');
+      return;
+    }
+    const firstQuizListId = quizzesList[0].id;
+    console.log(quizzesList[0].id);
+    navigate(`/quizzes/${firstQuizListId}`);
   };
 
   return (
@@ -51,10 +53,7 @@ export const Header = () => {
           <HomeHeader handleStartQuiz={handleStartQuiz} />
         ) : (
           <>
-            <button
-              onClick={handlePrevious}
-              disabled={!quizId || parseInt(quizId) <= FIRST_QUIZ_ID}
-            >
+            <button onClick={handlePrevious}>
               <FaRegArrowAltCircleLeft
                 className="cursor-pointer text-yellow-950"
                 size={24}
