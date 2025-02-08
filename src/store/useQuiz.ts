@@ -14,13 +14,12 @@ export interface QuizType {
 }
 interface QuizState {
   currentQuiz: QuizType;
-  prevQuiz: QuizType;
-  nextQuiz: QuizType;
+  prevQuizId: string | null;
+  nextQuizId: string | null;
   fetchQuizData: (id: string) => Promise<void>;
   fetchFirstQuizData: () => Promise<void>;
   loading: boolean;
   error: string | null;
-  setQuizState: (newState: Partial<QuizState>) => void;
 }
 interface QuizResultState {
   userAnswer: string[];
@@ -40,11 +39,10 @@ export interface QuizListState {
 
 export const useQuizStore = create<QuizState>((set) => ({
   currentQuiz: {} as QuizType,
-  prevQuiz: {} as QuizType,
-  nextQuiz: {} as QuizType,
+  prevQuizId: null,
+  nextQuizId: null,
   loading: false,
   error: null,
-  setQuizState: (newState) => set((state) => ({ ...state, ...newState })),
   fetchFirstQuizData: async () => {
     set({ loading: true, error: null });
     try {
@@ -80,8 +78,8 @@ export const useQuizStore = create<QuizState>((set) => ({
       if (data) {
         set({
           currentQuiz: data.currentQuiz,
-          prevQuiz: data.prevQuiz,
-          nextQuiz: data.nextQuiz,
+          prevQuizId: data.prevQuizId,
+          nextQuizId: data.nextQuizId,
         });
       } else {
         set({ error: '퀴즈가없수' });
@@ -117,7 +115,6 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
       },
       {}
     );
-
     new Function(
       `
           "use strict";
@@ -126,7 +123,6 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
           solution()
         `
     )(commandsForSolution);
-
     set({
       userAnswer: executedList.length > 0 ? executedList : ['아웃풋이없어'],
     });

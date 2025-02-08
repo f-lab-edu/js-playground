@@ -6,49 +6,23 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuizStore } from '../store/useQuiz';
 import { HomeHeader } from './HomeHeader';
+
 export const Header = () => {
   const navigate = useNavigate();
   const { quizId } = useParams();
-  const {
-    currentQuiz,
-    loading,
-    error,
-    fetchQuizData,
-    prevQuiz,
-    nextQuiz,
-    setQuizState,
-  } = useQuizStore();
+  const { currentQuiz, loading, error, fetchQuizData, prevQuizId, nextQuizId } =
+    useQuizStore();
 
   useEffect(() => {
     if (location.pathname === '/' || !quizId) return;
-    const isCurrentLoaded = currentQuiz.id === quizId;
-    const isPrevNextLoaded = prevQuiz.id === quizId || nextQuiz?.id === quizId;
-    if (!isCurrentLoaded || !isPrevNextLoaded) {
-      fetchQuizData(quizId);
-    }
+    fetchQuizData(quizId);
   }, [quizId]);
 
   const handlePrevious = () => {
-    if (prevQuiz) {
-      const currentValue = currentQuiz;
-      setQuizState({
-        currentQuiz: prevQuiz,
-        nextQuiz: currentValue,
-        prevQuiz: undefined,
-      });
-    }
-    navigate(`/quizzes/${prevQuiz.id}`);
+    navigate(`/quizzes/${prevQuizId}`);
   };
   const handleNext = () => {
-    if (nextQuiz) {
-      const currentValue = currentQuiz;
-      setQuizState({
-        currentQuiz: nextQuiz,
-        nextQuiz: undefined,
-        prevQuiz: currentValue,
-      });
-      navigate(`/quizzes/${nextQuiz.id}`);
-    }
+    navigate(`/quizzes/${nextQuizId}`);
   };
 
   return (
@@ -61,7 +35,7 @@ export const Header = () => {
           <HomeHeader />
         ) : (
           <>
-            <button onClick={handlePrevious} disabled={!prevQuiz}>
+            <button onClick={handlePrevious} disabled={!prevQuizId}>
               <FaRegArrowAltCircleLeft
                 className="cursor-pointer text-yellow-950"
                 size={24}
@@ -74,7 +48,7 @@ export const Header = () => {
             ) : (
               <p className="text-white">{currentQuiz.title || '퀴즈없음'}</p>
             )}
-            <button onClick={handleNext} disabled={!nextQuiz}>
+            <button onClick={handleNext} disabled={!nextQuizId}>
               <FaRegArrowAltCircleRight
                 className="cursor-pointer text-yellow-950"
                 size={24}
