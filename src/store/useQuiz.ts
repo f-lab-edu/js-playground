@@ -4,7 +4,9 @@ export interface QuizType {
   id: string;
   title: string;
   description: string;
-  order: number;
+  isFirst: boolean;
+  prevId: string | null;
+  nextId: string | null;
   grid: number[][];
   hint: string;
   startPosition: { x: number; y: number };
@@ -14,8 +16,6 @@ export interface QuizType {
 }
 interface QuizState {
   currentQuiz: QuizType;
-  prevQuizId: string | null;
-  nextQuizId: string | null;
   fetchQuizData: (id: string) => Promise<void>;
   fetchFirstQuizData: () => Promise<void>;
   loading: boolean;
@@ -78,8 +78,6 @@ export const useQuizStore = create<QuizState>((set) => ({
       if (data) {
         set({
           currentQuiz: data.currentQuiz,
-          prevQuizId: data.prevQuizId,
-          nextQuizId: data.nextQuizId,
         });
       } else {
         set({ error: '퀴즈가없수' });

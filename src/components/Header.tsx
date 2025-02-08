@@ -10,8 +10,7 @@ import { HomeHeader } from './HomeHeader';
 export const Header = () => {
   const navigate = useNavigate();
   const { quizId } = useParams();
-  const { currentQuiz, loading, error, fetchQuizData, prevQuizId, nextQuizId } =
-    useQuizStore();
+  const { currentQuiz, loading, error, fetchQuizData } = useQuizStore();
 
   useEffect(() => {
     if (location.pathname === '/' || !quizId) return;
@@ -19,10 +18,10 @@ export const Header = () => {
   }, [quizId]);
 
   const handlePrevious = () => {
-    navigate(`/quizzes/${prevQuizId}`);
+    navigate(`/quizzes/${currentQuiz.prevId}`);
   };
   const handleNext = () => {
-    navigate(`/quizzes/${nextQuizId}`);
+    navigate(`/quizzes/${currentQuiz.nextId}`);
   };
 
   return (
@@ -35,7 +34,7 @@ export const Header = () => {
           <HomeHeader />
         ) : (
           <>
-            <button onClick={handlePrevious} disabled={!prevQuizId}>
+            <button onClick={handlePrevious} disabled={!currentQuiz.prevId}>
               <FaRegArrowAltCircleLeft
                 className="cursor-pointer text-yellow-950"
                 size={24}
@@ -48,7 +47,7 @@ export const Header = () => {
             ) : (
               <p className="text-white">{currentQuiz.title || '퀴즈없음'}</p>
             )}
-            <button onClick={handleNext} disabled={!nextQuizId}>
+            <button onClick={handleNext} disabled={!currentQuiz.nextId}>
               <FaRegArrowAltCircleRight
                 className="cursor-pointer text-yellow-950"
                 size={24}
