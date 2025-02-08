@@ -1,4 +1,3 @@
-import { FIRST_QUIZ_ID } from '@/config/constant';
 import { useEffect } from 'react';
 import {
   FaRegArrowAltCircleLeft,
@@ -14,31 +13,15 @@ export const Header = () => {
   const { currentQuiz, loading, error, fetchQuizData } = useQuizStore();
 
   useEffect(() => {
-    if (location.pathname === '/') return;
-    const parsedQuizId = parseInt(quizId || '', 10);
-    if (isNaN(parsedQuizId) || parsedQuizId < FIRST_QUIZ_ID) {
-      navigate(`/quizzes/${FIRST_QUIZ_ID}`, { replace: true });
-      fetchQuizData(FIRST_QUIZ_ID.toString());
-    }
-    fetchQuizData(parsedQuizId.toString());
+    if (location.pathname === '/' || !quizId) return;
+    fetchQuizData(quizId);
   }, [quizId]);
 
   const handlePrevious = () => {
-    const parsedQuizId = parseInt(quizId || '', 10);
-    if (currentQuiz && parsedQuizId > FIRST_QUIZ_ID) {
-      const previousQuizId = parsedQuizId - 1;
-      navigate(`/quizzes/${previousQuizId}`);
-    }
+    navigate(`/quizzes/${currentQuiz.prevId}`);
   };
   const handleNext = () => {
-    const parsedQuizId = parseInt(quizId || '', 10);
-    if (currentQuiz) {
-      const nextQuizId = parsedQuizId + 1;
-      navigate(`/quizzes/${nextQuizId}`);
-    }
-  };
-  const handleStartQuiz = () => {
-    navigate(`/quizzes/${FIRST_QUIZ_ID}`);
+    navigate(`/quizzes/${currentQuiz.nextId}`);
   };
 
   return (
@@ -48,13 +31,10 @@ export const Header = () => {
       </div>
       <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-3">
         {location.pathname === '/' ? (
-          <HomeHeader handleStartQuiz={handleStartQuiz} />
+          <HomeHeader />
         ) : (
           <>
-            <button
-              onClick={handlePrevious}
-              disabled={!quizId || parseInt(quizId) <= FIRST_QUIZ_ID}
-            >
+            <button onClick={handlePrevious} disabled={!currentQuiz.prevId}>
               <FaRegArrowAltCircleLeft
                 className="cursor-pointer text-yellow-950"
                 size={24}
@@ -67,7 +47,7 @@ export const Header = () => {
             ) : (
               <p className="text-white">{currentQuiz.title || '퀴즈없음'}</p>
             )}
-            <button onClick={handleNext} disabled={!quizId}>
+            <button onClick={handleNext} disabled={!currentQuiz.nextId}>
               <FaRegArrowAltCircleRight
                 className="cursor-pointer text-yellow-950"
                 size={24}

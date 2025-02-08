@@ -4,6 +4,9 @@ export interface QuizType {
   id: string;
   title: string;
   description: string;
+  isFirst: boolean;
+  prevId: string | null;
+  nextId: string | null;
   grid: number[][];
   hint: string;
   startPosition: { x: number; y: number };
@@ -14,6 +17,7 @@ export interface QuizType {
 interface QuizState {
   currentQuiz: QuizType;
   fetchQuizData: (id: string) => Promise<void>;
+  fetchFirstQuizData: () => Promise<void>;
   loading: boolean;
   error: string | null;
 }
@@ -28,11 +32,41 @@ interface QuizResultState {
 interface CommandObject {
   [key: string]: () => void;
 }
+export interface QuizListState {
+  id: string;
+  title: string;
+}
 
 export const useQuizStore = create<QuizState>((set) => ({
   currentQuiz: {} as QuizType,
+  prevQuizId: null,
+  nextQuizId: null,
   loading: false,
   error: null,
+  fetchFirstQuizData: async () => {
+    set({ loading: true, error: null });
+    try {
+      const response = await fetch(`${API_BASE_URL}/quizzes/firstQuiz`);
+      if (!response.ok) {
+        throw new Error(`서버응답 오류 ${response.status}`);
+      }
+      const data = await response.json();
+      if (data) {
+        set({
+          currentQuiz: data,
+        });
+        return data.id;
+      } else {
+        set({ error: '퀴즈리스트가없음' });
+        return null;
+      }
+    } catch (error) {
+      set({ error: '퀴즈리스트 데이터 통신 에러 발생' });
+      return null;
+    } finally {
+      set({ loading: false });
+    }
+  },
   fetchQuizData: async (id: string) => {
     set({ loading: true, error: null });
     try {
@@ -42,7 +76,9 @@ export const useQuizStore = create<QuizState>((set) => ({
       }
       const data = await response.json();
       if (data) {
-        set({ currentQuiz: data.data });
+        set({
+          currentQuiz: data.currentQuiz,
+        });
       } else {
         set({ error: '퀴즈가없수' });
       }
@@ -77,7 +113,6 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
       },
       {}
     );
-
     new Function(
       `
           "use strict";
@@ -86,7 +121,6 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
           solution()
         `
     )(commandsForSolution);
-
     set({
       userAnswer: executedList.length > 0 ? executedList : ['아웃풋이없어'],
     });

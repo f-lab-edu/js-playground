@@ -1,7 +1,7 @@
 import { useQuizResultStore, useQuizStore } from '@/store/useQuiz';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { FORWARD, SHOOT } from '../config/constant';
+import { FORWARD, SHOOT, TURN_RIGHT } from '../config/constant';
 export const QuizVisualization = () => {
   const { currentQuiz } = useQuizStore();
   const { startPosition = { x: 0, y: 0 }, grid, goalPosition } = currentQuiz;
@@ -9,6 +9,8 @@ export const QuizVisualization = () => {
   const { userAnswer } = useQuizResultStore();
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const { quizId } = useParams();
+  const directionRef = useRef<'x' | 'y'>('y');
+
   useEffect(() => {
     if (!userAnswer || !Array.isArray(userAnswer) || userAnswer.length === 0)
       return;
@@ -16,14 +18,26 @@ export const QuizVisualization = () => {
     let userAction = false;
     userAnswer.map((command, index) => {
       setTimeout(() => {
-        if (command === FORWARD) {
-          newPos.y = Math.min(newPos.y + 1, grid.length - 1);
-        } else if (command === SHOOT) {
-          console.log('🔫 Shooting!');
-          userAction = true;
+        if (directionRef.current === 'y') {
+          if (command === FORWARD) {
+            newPos.y = Math.min(newPos.y + 1, grid.length - 1);
+          } else if (command === SHOOT) {
+            console.log('🔫 Shooting!');
+            userAction = true;
+          } else if (command === TURN_RIGHT) {
+            directionRef.current = 'x';
+          }
+        } else if (directionRef.current === 'x') {
+          if (command === FORWARD) {
+            newPos.x = Math.min(newPos.x + 1, grid.length - 1);
+          } else if (command === SHOOT) {
+            console.log('🔫 Shooting!');
+            userAction = true;
+          } else if (command === TURN_RIGHT) {
+            directionRef.current = 'y';
+          }
         }
         setCharacterPos({ ...newPos });
-
         console.log(
           `현재 위치: (${newPos.x}, ${newPos.y}) / 목표 위치: (${goalPosition.x}, ${goalPosition.y})`
         );
@@ -33,7 +47,6 @@ export const QuizVisualization = () => {
             newPos.y === goalPosition.y &&
             userAction;
           console.log(`정답 여부: ${isCorrectAnswer}`);
-
           setIsCorrect(isCorrectAnswer);
         } else {
           setIsCorrect(false);
