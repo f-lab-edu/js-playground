@@ -4,6 +4,7 @@ export interface QuizType {
   id: string;
   title: string;
   description: string;
+  order: number;
   grid: number[][];
   hint: string;
   startPosition: { x: number; y: number };
@@ -13,11 +14,13 @@ export interface QuizType {
 }
 interface QuizState {
   currentQuiz: QuizType;
-  quizzesList: QuizListState[];
+  prevQuiz: QuizType;
+  nextQuiz: QuizType;
   fetchQuizData: (id: string) => Promise<void>;
-  fetchQuizzesData: () => Promise<void>;
+  fetchFirstQuizData: () => Promise<void>;
   loading: boolean;
   error: string | null;
+  setQuizState: (newState: Partial<QuizState>) => void;
 }
 interface QuizResultState {
   userAnswer: string[];
@@ -31,31 +34,37 @@ interface CommandObject {
   [key: string]: () => void;
 }
 export interface QuizListState {
-  _id: string;
   id: string;
   title: string;
 }
 
 export const useQuizStore = create<QuizState>((set) => ({
   currentQuiz: {} as QuizType,
+  prevQuiz: {} as QuizType,
+  nextQuiz: {} as QuizType,
   loading: false,
   error: null,
-  quizzesList: [],
-  fetchQuizzesData: async () => {
+  setQuizState: (newState) => set((state) => ({ ...state, ...newState })),
+  fetchFirstQuizData: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await fetch(`${API_BASE_URL}/quizzes`);
+      const response = await fetch(`${API_BASE_URL}/quizzes/firstQuiz`);
       if (!response.ok) {
         throw new Error(`서버응답 오류 ${response.status}`);
       }
       const data = await response.json();
       if (data) {
-        set({ quizzesList: data });
+        set({
+          currentQuiz: data,
+        });
+        return data.id;
       } else {
         set({ error: '퀴즈리스트가없음' });
+        return null;
       }
     } catch (error) {
       set({ error: '퀴즈리스트 데이터 통신 에러 발생' });
+      return null;
     } finally {
       set({ loading: false });
     }
@@ -69,7 +78,11 @@ export const useQuizStore = create<QuizState>((set) => ({
       }
       const data = await response.json();
       if (data) {
-        set({ currentQuiz: data.data });
+        set({
+          currentQuiz: data.currentQuiz,
+          prevQuiz: data.prevQuiz,
+          nextQuiz: data.nextQuiz,
+        });
       } else {
         set({ error: '퀴즈가없수' });
       }

@@ -9,38 +9,46 @@ import { HomeHeader } from './HomeHeader';
 export const Header = () => {
   const navigate = useNavigate();
   const { quizId } = useParams();
-  const { currentQuiz, loading, error, fetchQuizData, quizzesList } =
-    useQuizStore();
+  const {
+    currentQuiz,
+    loading,
+    error,
+    fetchQuizData,
+    prevQuiz,
+    nextQuiz,
+    setQuizState,
+  } = useQuizStore();
 
   useEffect(() => {
     if (location.pathname === '/' || !quizId) return;
-    fetchQuizData(quizId);
-  }, [quizId]);
-  const currentIndex = quizzesList.findIndex(
-    (quiz) => quiz.id === currentQuiz.id
-  );
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      navigate(`${quizzesList[currentIndex - 1].id}`);
-    } else {
-      console.log('문제찾을수없음');
+    const isCurrentLoaded = currentQuiz.id === quizId;
+    const isPrevNextLoaded = prevQuiz.id === quizId || nextQuiz?.id === quizId;
+    if (!isCurrentLoaded || !isPrevNextLoaded) {
+      fetchQuizData(quizId);
     }
+  }, [quizId]);
+
+  const handlePrevious = () => {
+    if (prevQuiz) {
+      const currentValue = currentQuiz;
+      setQuizState({
+        currentQuiz: prevQuiz,
+        nextQuiz: currentValue,
+        prevQuiz: undefined,
+      });
+    }
+    navigate(`/quizzes/${prevQuiz.id}`);
   };
   const handleNext = () => {
-    if (currentIndex !== -1 && currentIndex < quizzesList.length - 1) {
-      navigate(`${quizzesList[currentIndex + 1].id}`);
-    } else {
-      console.log('문제찾을수없음');
+    if (nextQuiz) {
+      const currentValue = currentQuiz;
+      setQuizState({
+        currentQuiz: nextQuiz,
+        nextQuiz: undefined,
+        prevQuiz: currentValue,
+      });
+      navigate(`/quizzes/${nextQuiz.id}`);
     }
-  };
-  const handleStartQuiz = () => {
-    if (quizzesList.length === 0) {
-      console.log('퀴즈목록없음');
-      return;
-    }
-    const firstQuizListId = quizzesList[0].id;
-    console.log(quizzesList[0].id);
-    navigate(`/quizzes/${firstQuizListId}`);
   };
 
   return (
@@ -50,10 +58,10 @@ export const Header = () => {
       </div>
       <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-3">
         {location.pathname === '/' ? (
-          <HomeHeader handleStartQuiz={handleStartQuiz} />
+          <HomeHeader />
         ) : (
           <>
-            <button onClick={handlePrevious}>
+            <button onClick={handlePrevious} disabled={!prevQuiz}>
               <FaRegArrowAltCircleLeft
                 className="cursor-pointer text-yellow-950"
                 size={24}
@@ -66,7 +74,7 @@ export const Header = () => {
             ) : (
               <p className="text-white">{currentQuiz.title || '퀴즈없음'}</p>
             )}
-            <button onClick={handleNext} disabled={!quizId}>
+            <button onClick={handleNext} disabled={!nextQuiz}>
               <FaRegArrowAltCircleRight
                 className="cursor-pointer text-yellow-950"
                 size={24}
