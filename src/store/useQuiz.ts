@@ -25,15 +25,10 @@ interface QuizResultState {
   userAnswer: string[];
   userCode: string;
   setUserCode: (code: string) => void;
-  addSidebarCommand: (code: string) => void;
   runCode: () => void;
 }
 interface CommandObject {
   [key: string]: () => void;
-}
-export interface QuizListState {
-  id: string;
-  title: string;
 }
 
 export const useQuizStore = create<QuizState>((set) => ({
@@ -95,11 +90,6 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
   
 }`,
   setUserCode: (code) => set({ userCode: code }),
-  addSidebarCommand: (code: string) => {
-    set((state) => ({
-      userCode: state.userCode + '\n' + code + `()`,
-    }));
-  },
   runCode: () => {
     const currentQuiz = useQuizStore.getState().currentQuiz;
     const userCode = useQuizResultStore.getState().userCode;
@@ -117,6 +107,9 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
     const solutionRegex = /function\s+solution\s*\(\)\s*{([\s\S]*?)}/;
     const match = userCode.match(solutionRegex);
     const solutionFnBody = match ? match[1].trim() : null;
+    const processedCode = solutionFnBody
+      ? solutionFnBody.replace(/(\w+\(\))/g, '$1;')
+      : '';
     const codeOutsideBeforeSolution =
       match && typeof match.index === 'number'
         ? userCode.slice(0, match.index).trim()
@@ -129,13 +122,13 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
     if (
       codeOutsideBeforeSolution ||
       codeOutsideAfterSolution ||
-      !solutionFnBody
+      !processedCode
     ) {
       if (codeOutsideBeforeSolution || codeOutsideAfterSolution) {
         alert('함수내부에 코드를 입력 해주세요');
         return;
       }
-      if (!solutionFnBody) {
+      if (!processedCode) {
         alert('코드를 입력해주세요');
       }
     }
@@ -143,11 +136,10 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
     try {
       new Function(
         `"use strict";
-          const commands = arguments[0]; 
-        
+          const commands = arguments[0];         
         function solution(){
          const { ${Object.keys(commandsForSolution).join(', ')} } = commands;
-          ${solutionFnBody}
+          ${processedCode}
         }
         solution();
         `
