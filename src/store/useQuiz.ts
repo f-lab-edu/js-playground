@@ -1,4 +1,7 @@
 import { API_BASE_URL } from '@/config/constant';
+import { alterASICode } from '@/lib/codeASIUtils';
+import { validateUserCode } from '@/lib/codeValidateUtils';
+import { getCommandForSolution } from '@/lib/commandUtils';
 import { create } from 'zustand';
 export interface QuizType {
   id: string;
@@ -27,7 +30,7 @@ interface QuizResultState {
   setUserCode: (code: string) => void;
   runCode: () => void;
 }
-interface CommandObject {
+export interface CommandObject {
   [key: string]: () => void;
 }
 
@@ -94,43 +97,18 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
     const currentQuiz = useQuizStore.getState().currentQuiz;
     const userCode = useQuizResultStore.getState().userCode;
     const executedList: string[] = [];
-    const commandsForSolution = currentQuiz.commands.reduce(
-      (acc: CommandObject, cur) => {
-        acc[cur.name] = () => {
-          executedList.push(cur.name);
-          new Function(cur.functionCode)();
-        };
-        return acc;
-      },
-      {}
+    const commandsForSolution = getCommandForSolution(
+      currentQuiz,
+      executedList
     );
+
     const solutionRegex = /function\s+solution\s*\(\)\s*{([\s\S]*?)}/;
     const match = userCode.match(solutionRegex);
     const solutionFnBody = match ? match[1].trim() : null;
-    const processedCode = solutionFnBody
-      ? solutionFnBody.replace(/(\w+\(\))/g, '$1;')
-      : '';
-    const codeOutsideBeforeSolution =
-      match && typeof match.index === 'number'
-        ? userCode.slice(0, match.index).trim()
-        : userCode.trim();
+    const alteredASICode = alterASICode(solutionFnBody);
 
-    const codeOutsideAfterSolution = match
-      ? userCode.slice((match.index ?? 0) + match[0].length).trim()
-      : '';
-
-    if (
-      codeOutsideBeforeSolution ||
-      codeOutsideAfterSolution ||
-      !processedCode
-    ) {
-      if (codeOutsideBeforeSolution || codeOutsideAfterSolution) {
-        alert('함수내부에 코드를 입력 해주세요');
-        return;
-      }
-      if (!processedCode) {
-        alert('코드를 입력해주세요');
-      }
+    if (!validateUserCode(userCode, alteredASICode)) {
+      return;
     }
 
     try {
@@ -139,7 +117,7 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
           const commands = arguments[0];         
         function solution(){
          const { ${Object.keys(commandsForSolution).join(', ')} } = commands;
-          ${processedCode}
+          ${alteredASICode}
         }
         solution();
         `
