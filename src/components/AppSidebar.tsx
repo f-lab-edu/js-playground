@@ -9,27 +9,35 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { useQuizResultStore, useQuizStore } from '@/store/useQuiz';
+import { useQuizStore } from '@/store/useQuiz';
 import { Collapsible, CollapsibleTrigger } from '@radix-ui/react-collapsible';
 import { Inbox } from 'lucide-react';
+import { FaPersonRifle, FaPersonWalkingArrowRight } from 'react-icons/fa6';
 import { IoIosCloseCircle } from 'react-icons/io';
 
 export function AppSidebar() {
   const { currentQuiz } = useQuizStore();
   const commands = currentQuiz?.commands ?? [];
   const { setOpen, open } = useSidebar();
-  const { addSidebarCommand } = useQuizResultStore();
   const alterSidebarCommands = (
     commands: {
       name: string;
       functionCode: string;
     }[]
   ) => {
-    return commands.map((command) => ({
-      title: command.name,
-      icon: Inbox,
-      command: command.functionCode,
-    }));
+    return commands.map((command) => {
+      const icon =
+        command.name === 'forward'
+          ? FaPersonWalkingArrowRight
+          : command.name === 'shoot'
+            ? FaPersonRifle
+            : Inbox;
+      return {
+        title: command.name,
+        icon,
+        command: command.functionCode,
+      };
+    });
   };
   const alteredSidebarCommand = alterSidebarCommands(commands);
 
@@ -50,16 +58,10 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {alteredSidebarCommand.map((item) => (
-                <Collapsible
-                  key={item.title}
-                  // defaultOpen={item.subItems && item.subItems.length > 0}
-                  className="group/collapsible"
-                >
+                <Collapsible key={item.title} className="group/collapsible">
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
-                      <SidebarMenuButton
-                        onClick={() => addSidebarCommand(item.title)}
-                      >
+                      <SidebarMenuButton>
                         <span className="flex items-center gap-2">
                           <item.icon className="w-4 h-4 shrink-0" />
                           <span className="group-data-[state=collapsed]:hidden">

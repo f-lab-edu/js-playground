@@ -23,11 +23,10 @@ interface QuizState {
 }
 interface QuizResultState {
   userAnswer: string[];
-  setUserAnswer: (answer: string[]) => void;
   userCode: string;
   setUserCode: (code: string) => void;
   addSidebarCommand: (code: string) => void;
-  runCode: (code: string) => void;
+  runCode: () => void;
 }
 interface CommandObject {
   [key: string]: () => void;
@@ -92,16 +91,18 @@ export const useQuizStore = create<QuizState>((set) => ({
 
 export const useQuizResultStore = create<QuizResultState>((set) => ({
   userAnswer: [],
-  setUserAnswer: (answer) => set({ userAnswer: answer }),
-  userCode: '',
+  userCode: `function solution(){
+  
+}`,
   setUserCode: (code) => set({ userCode: code }),
   addSidebarCommand: (code: string) => {
     set((state) => ({
       userCode: state.userCode + '\n' + code + `()`,
     }));
   },
-  runCode: (code) => {
+  runCode: () => {
     const currentQuiz = useQuizStore.getState().currentQuiz;
+    const userCode = useQuizResultStore.getState().userCode;
     const executedList: string[] = [];
     const commandsForSolution = currentQuiz.commands.reduce(
       (acc: CommandObject, cur) => {
@@ -113,17 +114,52 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
       },
       {}
     );
-    new Function(
-      `
-          "use strict";
-          const{${Object.keys(commandsForSolution).join(', ')}} = arguments[0]
-          ${code}
-          solution()
+    const solutionRegex = /function\s+solution\s*\(\)\s*{([\s\S]*?)}/;
+    const match = userCode.match(solutionRegex);
+    const solutionFnBody = match ? match[1].trim() : null;
+    const codeOutsideBeforeSolution =
+      match && typeof match.index === 'number'
+        ? userCode.slice(0, match.index).trim()
+        : userCode.trim();
+
+    const codeOutsideAfterSolution = match
+      ? userCode.slice((match.index ?? 0) + match[0].length).trim()
+      : '';
+
+    if (
+      codeOutsideBeforeSolution ||
+      codeOutsideAfterSolution ||
+      !solutionFnBody
+    ) {
+      if (codeOutsideBeforeSolution || codeOutsideAfterSolution) {
+        alert('함수내부에 코드를 입력 해주세요');
+        return;
+      }
+      if (!solutionFnBody) {
+        alert('코드를 입력해주세요');
+      }
+    }
+
+    try {
+      new Function(
+        `"use strict";
+          const commands = arguments[0]; 
+        
+        function solution(){
+         const { ${Object.keys(commandsForSolution).join(', ')} } = commands;
+          ${solutionFnBody}
+        }
+        solution();
         `
-    )(commandsForSolution);
+      )(commandsForSolution);
+    } catch (error) {
+      console.error('코드 실행 오류:', error);
+      alert('코드 실행 중 오류가 발생했습니다.');
+      return;
+    }
+
     set({
-      userAnswer: executedList.length > 0 ? executedList : ['아웃풋이없어'],
+      userAnswer: executedList.length > 0 ? executedList : [],
     });
-    return executedList;
   },
 }));

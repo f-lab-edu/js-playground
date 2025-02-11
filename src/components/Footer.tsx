@@ -1,11 +1,8 @@
 import { useQuizResultStore, useQuizStore } from '@/store/useQuiz';
 
 export const Footer = () => {
-  const { userCode, runCode } = useQuizResultStore();
+  const { runCode } = useQuizResultStore();
   const { currentQuiz } = useQuizStore();
-  const handleRunCode = () => {
-    runCode(userCode);
-  };
 
   return (
     <footer className="bg-gray-950 h-[64px] p-4 flex justify-between items-center">
@@ -16,7 +13,7 @@ export const Footer = () => {
         </span>
       </div>
       <button
-        onClick={handleRunCode}
+        onClick={runCode}
         className="bg-yellow-950 text-gray-950 rounded px-4 py-1 s"
       >
         RUN
