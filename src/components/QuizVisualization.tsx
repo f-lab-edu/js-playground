@@ -47,6 +47,7 @@ export const QuizVisualization = () => {
             newPos.y === goalPosition.y &&
             userAction;
           setIsCorrect(isCorrectAnswer);
+          directionRef.current = 'y';
         }
       }, index * 1000);
     });
