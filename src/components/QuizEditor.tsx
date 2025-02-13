@@ -7,12 +7,12 @@ import { useParams } from 'react-router-dom';
 export const QuizEditor = () => {
   const { userCode, setUserCode } = useQuizResultStore();
   const { quizId } = useParams();
+
   useEffect(() => {
     setUserCode(`function solution(){
-  
+
 }`);
   }, [quizId]);
-
   return (
     <div>
       <CodeMirror

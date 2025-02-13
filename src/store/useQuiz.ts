@@ -1,4 +1,7 @@
 import { API_BASE_URL } from '@/config/constant';
+import { alterASICode } from '@/lib/codeASIUtils';
+import { validateUserCode } from '@/lib/codeValidateUtils';
+import { getCommandForSolution } from '@/lib/commandUtils';
 import { create } from 'zustand';
 export interface QuizType {
   id: string;
@@ -23,18 +26,12 @@ interface QuizState {
 }
 interface QuizResultState {
   userAnswer: string[];
-  setUserAnswer: (answer: string[]) => void;
   userCode: string;
   setUserCode: (code: string) => void;
-  addSidebarCommand: (code: string) => void;
-  runCode: (code: string) => void;
+  runCode: () => void;
 }
-interface CommandObject {
+export interface CommandObject {
   [key: string]: () => void;
-}
-export interface QuizListState {
-  id: string;
-  title: string;
 }
 
 export const useQuizStore = create<QuizState>((set) => ({
@@ -92,38 +89,40 @@ export const useQuizStore = create<QuizState>((set) => ({
 
 export const useQuizResultStore = create<QuizResultState>((set) => ({
   userAnswer: [],
-  setUserAnswer: (answer) => set({ userAnswer: answer }),
-  userCode: '',
+  userCode: `function solution(){
+  
+}`,
   setUserCode: (code) => set({ userCode: code }),
-  addSidebarCommand: (code: string) => {
-    set((state) => ({
-      userCode: state.userCode + '\n' + code + `()`,
-    }));
-  },
-  runCode: (code) => {
+  runCode: () => {
     const currentQuiz = useQuizStore.getState().currentQuiz;
+    const userCode = useQuizResultStore.getState().userCode;
     const executedList: string[] = [];
-    const commandsForSolution = currentQuiz.commands.reduce(
-      (acc: CommandObject, cur) => {
-        acc[cur.name] = () => {
-          executedList.push(cur.name);
-          new Function(cur.functionCode)();
-        };
-        return acc;
-      },
-      {}
+    const commandsForSolution = getCommandForSolution(
+      currentQuiz,
+      executedList
     );
-    new Function(
-      `
-          "use strict";
-          const{${Object.keys(commandsForSolution).join(', ')}} = arguments[0]
-          ${code}
-          solution()
+    const codeInsideSolution = validateUserCode(userCode);
+    const alteredASICode = alterASICode(codeInsideSolution);
+
+    try {
+      new Function(
+        `"use strict";
+          const commands = arguments[0];         
+        function solution(){
+         const { ${Object.keys(commandsForSolution).join(', ')} } = commands;
+          ${alteredASICode}
+        }
+        solution();
         `
-    )(commandsForSolution);
+      )(commandsForSolution);
+    } catch (error) {
+      console.error('코드 실행 오류:', error);
+      alert('코드 실행 중 오류가 발생했습니다.');
+      return;
+    }
+
     set({
-      userAnswer: executedList.length > 0 ? executedList : ['아웃풋이없어'],
+      userAnswer: executedList.length > 0 ? executedList : [],
     });
-    return executedList;
   },
 }));

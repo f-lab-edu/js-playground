@@ -46,10 +46,8 @@ export const QuizVisualization = () => {
             newPos.x === goalPosition.x &&
             newPos.y === goalPosition.y &&
             userAction;
-          console.log(`정답 여부: ${isCorrectAnswer}`);
           setIsCorrect(isCorrectAnswer);
-        } else {
-          setIsCorrect(false);
+          directionRef.current = 'y';
         }
       }, index * 1000);
     });
