@@ -101,15 +101,8 @@ export const useQuizResultStore = create<QuizResultState>((set) => ({
       currentQuiz,
       executedList
     );
-
-    const solutionRegex = /function\s+solution\s*\(\)\s*{([\s\S]*?)}/;
-    const match = userCode.match(solutionRegex);
-    const solutionFnBody = match ? match[1].trim() : null;
-    const alteredASICode = alterASICode(solutionFnBody);
-
-    if (!validateUserCode(userCode, alteredASICode)) {
-      return;
-    }
+    const codeInsideSolution = validateUserCode(userCode);
+    const alteredASICode = alterASICode(codeInsideSolution);
 
     try {
       new Function(
