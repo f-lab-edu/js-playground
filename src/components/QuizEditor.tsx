@@ -20,7 +20,7 @@ export const QuizEditor = () => {
         className="mt-2"
         value={userCode}
         theme={oneDark}
-        height="500px"
+        height="550px"
         extensions={[javascript({ jsx: true }), lineNumbers()]}
         onChange={setUserCode}
       />

@@ -13,12 +13,19 @@ import { useQuizStore } from '@/store/useQuiz';
 import { Collapsible, CollapsibleTrigger } from '@radix-ui/react-collapsible';
 import { Inbox } from 'lucide-react';
 import { FaPersonRifle, FaPersonWalkingArrowRight } from 'react-icons/fa6';
+import { GiHamburgerMenu, GiJumpAcross } from 'react-icons/gi';
 import {
   HiMiniArrowTurnDownLeft,
   HiMiniArrowTurnDownRight,
 } from 'react-icons/hi2';
 import { IoIosCloseCircle } from 'react-icons/io';
-import { FORWARD, SHOOT, TURN_LEFT, TURN_RIGHT } from '../config/constant';
+import {
+  FORWARD,
+  JUMP,
+  SHOOT,
+  TURN_LEFT,
+  TURN_RIGHT,
+} from '../config/constant';
 interface Command {
   name: string;
   functionCode: string;
@@ -37,6 +44,7 @@ export const iconObjects: Record<string, React.ComponentType> = {
   [SHOOT]: FaPersonRifle,
   [TURN_RIGHT]: HiMiniArrowTurnDownRight,
   [TURN_LEFT]: HiMiniArrowTurnDownLeft,
+  [JUMP]: GiJumpAcross,
   default: Inbox,
 };
 
@@ -58,16 +66,26 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent className="bg-navy-950 text-white">
         <SidebarGroup>
-          <div className="flex justify-between items-center">
-            <SidebarGroupLabel className="text-yellow-950 text-lg">
-              code Menu
-            </SidebarGroupLabel>
-            <IoIosCloseCircle
-              className="text-yellow-950 cursor-pointer"
-              size={25}
-              onClick={() => setOpen(false)}
-            />
-          </div>
+          {open ? (
+            <div className="flex justify-between items-center">
+              <SidebarGroupLabel className="text-yellow-950 text-lg">
+                code Menu
+              </SidebarGroupLabel>
+              <IoIosCloseCircle
+                className="text-yellow-950 cursor-pointer"
+                size={25}
+                onClick={() => setOpen(false)}
+              />
+            </div>
+          ) : (
+            <div className="flex justify-center gap-2 p-2">
+              <GiHamburgerMenu
+                onClick={() => setOpen(!open)}
+                className="cursor-pointer"
+                size={16}
+              />
+            </div>
+          )}
           <SidebarGroupContent>
             <SidebarMenu>
               {alteredSidebarCommands.map((item) => (

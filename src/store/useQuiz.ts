@@ -1,7 +1,7 @@
 import { API_BASE_URL } from '@/config/constant';
-import { alterASICode } from '@/lib/codeASIUtils';
-import { validateUserCode } from '@/lib/codeValidateUtils';
-import { getCommandForSolution } from '@/lib/commandUtils';
+import { alterASICode } from '@/utils/codeASIUtils';
+import { validateUserCode } from '@/utils/codeValidateUtils';
+import { getCommandForSolution } from '@/utils/commandUtils';
 import { create } from 'zustand';
 export interface QuizType {
   id: string;
